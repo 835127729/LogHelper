@@ -43,16 +43,12 @@ public class ShowLatteDescription extends AnAction{
     }
 
     public void printClassNames(VirtualFile root){
-        VfsUtilCore.iterateChildrenRecursively(root, new VirtualFileFilter() {
-            @Override
-            public boolean accept(VirtualFile virtualFile) {
-                //return true;
-                return (virtualFile.getFileType().getName()==JavaFileType.INSTANCE.getName());
-            }
-        }, new ContentIterator() {
+        VfsUtilCore.iterateChildrenRecursively(root, null, new ContentIterator() {
             @Override
             public boolean processFile(VirtualFile virtualFile) {
-                Messages.showMessageDialog(project, root.getPath(), "title" + virtualFile.getFileType().getName(), Messages.getInformationIcon());
+                if(virtualFile.getFileType().getName()==JavaFileType.INSTANCE.getName()){
+                    dealWithJava(virtualFile);
+                }
                 for (VirtualFile v : virtualFile.getChildren()) {
                     printClassNames(v);
                 }
@@ -61,4 +57,7 @@ public class ShowLatteDescription extends AnAction{
         });
     }
 
+    private void dealWithJava(VirtualFile virtualFile){
+        Messages.showMessageDialog(project, virtualFile.getPath(), "title" + virtualFile.getFileType().getName(), Messages.getInformationIcon());
+    }
 }
